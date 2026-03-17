@@ -1,4 +1,6 @@
 *.csv
 catboost_info/
 r.ipynb
-train_models.py
+train_models
+catboost_info/
+*.png
