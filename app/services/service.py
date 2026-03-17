@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from catboost import CatBoostClassifier, CatBoostRegressor
@@ -191,31 +192,99 @@ def train_model_sev():
 # # =====================================================================
 # # --- MÉTRIQUES FINALES ---
 # # =====================================================================
-# def predict_final():
-#     df = df_clean_fe()
-#     categorical_features, numerical_features = cat()
-#     X = df[numerical_features + categorical_features]
-#     y_freq = df['nombre_sinistres']
-#     X_test, y_test, X_test_sev, y_test_sev,categorical_features = prepare_data()
-#     model_freq = train_model_freq()
-#     model_sev = train_model_sev()
-#     encoder = TargetEncoder(cols=['cp_dep'])
-#     y_pred_freq_proba = model_freq.predict_proba(X_test)[:, 1]
-#     auc_final = roc_auc_score(y_test, y_pred_freq_proba)
-#     print(f"\nROC AUC final for the frequency model: {auc_final:.4f}")
+def predict_frequency(data_dict: dict) -> float:
+    """
+    Prend un dictionnaire (JSON) en entrée, applique le feature engineering,
+    et retourne la probabilité de sinistre (predict_proba).
+    """
+    # 1. Conversion du dictionnaire en DataFrame d'une seule ligne
+    df_input = pd.DataFrame([data_dict])
+    
+    # 2. Application du Feature Engineering
+    # On n'appelle PAS clean_data() ici car clean_data() charge train.csv.
+    # On ne veut transformer QUE la ligne reçue.
+    df_processed = apply_feature_engineering(df_input)
+    
+    # 3. Récupération des noms de colonnes attendus par le modèle
+    categorical_features, numerical_features = cat()
+    
+    # Vérification que toutes les colonnes nécessaires sont présentes
+    features_needed = numerical_features + categorical_features
+    missing_cols = [col for col in features_needed if col not in df_processed.columns]
+    if missing_cols:
+        raise ValueError(f"Colonnes manquantes après feature engineering : {missing_cols}")
+        
+    X_pred = df_processed[features_needed]
 
-#     y_pred_sev = model_sev.predict(X_test_sev)
-#     mse_sev_final = mean_squared_error(y_test_sev, y_pred_sev)
-#     print(f"Mean Squared Error final for the severity model: {mse_sev_final:.2f}")
+    # =====================================================================
+    # ⚠️ GESTION CRITIQUE DU TARGET ENCODER ⚠️
+    # Dans ton script d'entraînement, tu as : encoder = TargetEncoder(cols=['cp_dep'])
+    # Si tu as entraîné CatBoost sur des données encodées, tu DOIS :
+    # 1. Avoir sauvegardé l'encodeur lors de l'entraînement : pickle.dump(encoder, open('encoder.pkl', 'wb'))
+    # 2. Le charger ici :
+    #    with open('data/models/encoder.pkl', 'rb') as f:
+    #        encoder = pickle.load(f)
+    #    X_pred = encoder.transform(X_pred)
+    #
+    # SI TU N'AS PAS SAUVEGARDÉ L'ENCODEUR, tu dois ré-entraîner ton modèle 
+    # SANS TargetEncoder (laisse CatBoost gérer 'cp_dep' comme categorical_feature).
+    # =====================================================================
 
+    # 4. Chargement du modèle (Idéalement, à faire une seule fois au boot de l'API)
+    model_path = 'data/models/model_freq.cbm'
+    if not os.path.exists(model_path):
+         raise FileNotFoundError(f"Le modèle n'a pas été trouvé au chemin : {model_path}")
 
-#     # --- 4. CALCUL DU COÛT ESPÉRÉ SUR TOUT LE DATASET ---
-#     X_encoded = encoder.transform(X)
+    model_freq = CatBoostClassifier()
+    model_freq.load_model(model_path)
+    
+    # 5. Prédiction
+    # predict_proba renvoie [[proba_classe_0, proba_classe_1]]
+    # On veut l'indice 1 (probabilité d'avoir un sinistre) pour la première ligne [0]
+    proba_sinistre = model_freq.predict_proba(X_pred)[0][1]
+    
+    return float(proba_sinistre)
 
-#     df['probabilite'] = model_freq.predict_proba(X_encoded)[:, 1]
-#     df['montant_potentiel'] = model_sev.predict(X_encoded)
-#     df['pred'] = df['probabilite'] * df['montant_potentiel']
+def predict_severity(data_dict: dict) -> float:
+    """
+    Prend un dictionnaire (JSON) en entrée, applique le feature engineering,
+    et retourne le montant estimé du sinistre en cas d'accident.
+    """
+    # 1. Conversion en DataFrame (1 seule ligne)
+    df_input = pd.DataFrame([data_dict])
+    
+    # 2. Feature Engineering
+    df_processed = apply_feature_engineering(df_input)
+    
+    # 3. Filtrage des colonnes
+    categorical_features, numerical_features = cat()
+    features_needed = numerical_features + categorical_features
+    
+    missing_cols = [col for col in features_needed if col not in df_processed.columns]
+    if missing_cols:
+        raise ValueError(f"Colonnes manquantes après feature engineering : {missing_cols}")
+        
+    X_pred = df_processed[features_needed]
 
-#     print("\nAperçu des prédictions :")
-#     print(df[['probabilite', 'montant_potentiel', 'pred']].head())
+    # =====================================================================
+    # ⚠️ MÊME AVERTISSEMENT QUE POUR LA FRÉQUENCE ⚠️
+    # Si ton modèle de sévérité a été entraîné AVEC un TargetEncoder, 
+    # tu dois charger le fichier pickle de cet encodeur ici et transformer X_pred.
+    # =====================================================================
 
+    # 4. Chargement du modèle
+    model_path = 'data/models/model_sev.cbm'
+    if not os.path.exists(model_path):
+         raise FileNotFoundError(f"Le modèle de sévérité est introuvable : {model_path}")
+
+    model_sev = CatBoostRegressor()
+    model_sev.load_model(model_path)
+    
+    # 5. Prédiction du montant
+    montant_estime = model_sev.predict(X_pred)[0]
+    
+    # 6. Règle métier : Un montant de sinistre ne peut pas être négatif
+    # (Parfois, les modèles de régression prédisent de légères valeurs négatives)
+    montant_estime = max(0.0, float(montant_estime))
+    
+    return montant_estime
