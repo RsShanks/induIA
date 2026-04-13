@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InduIA - Pricing Assurances</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .section-title {
+            border-bottom: 2px solid #0d6efd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            margin-top: 30px;
+            color: #0d6efd;
+        }
+        .sticky-result {
+            position: sticky;
+            top: 20px;
+        }
+    </style>
+</head>
+<body class="bg-light pb-5">
+    <div class="container mt-5">
+        <h1 class="text-center mb-5">Assurancetourix - Moteur de Tarification</h1>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <form id="pricingForm">
+                            
+                            <h4 class="section-title">👤 Profil Conducteur(s)</h4>
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Âge Cond. 1</label>
+                                    <input type="number" class="form-control" id="age_conducteur1" value="66" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Sexe Cond. 1</label>
+                                    <select class="form-select" id="sex_conducteur1">
+                                        <option value="M">Homme</option>
+                                        <option value="F" selected>Femme</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Permis Cond. 1 (ans)</label>
+                                    <input type="number" class="form-control" id="anciennete_permis1" value="34" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Bonus (ex: 0.58)</label>
+                                    <input type="number" step="0.01" class="form-control" id="bonus" value="0.58" required>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">2ème Conducteur</label>
+                                    <select class="form-select" id="conducteur2">
+                                        <option value="No" selected>Non</option>
+                                        <option value="Yes">Oui</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Âge Cond. 2</label>
+                                    <input type="number" class="form-control" id="age_conducteur2" value="0">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Sexe Cond. 2</label>
+                                    <select class="form-select" id="sex_conducteur2">
+                                        <option value="" selected>Aucun</option>
+                                        <option value="M">Homme</option>
+                                        <option value="F">Femme</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Permis Cond. 2</label>
+                                    <input type="number" class="form-control" id="anciennete_permis2" value="0">
+                                </div>
+                            </div>
+
+                            <h4 class="section-title">🚗 Informations Véhicule</h4>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label text-muted small">Marque</label>
+                                    <input type="text" class="form-control" id="marque_vehicule" value="RENAULT" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-muted small">Modèle</label>
+                                    <input type="text" class="form-control" id="modele_vehicule" value="CLIO" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-muted small">Type</label>
+                                    <select class="form-select" id="type_vehicule">
+                                        <option value="Tourism" selected>Tourisme</option>
+                                        <option value="Commercial">Commercial</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Prix (€)</label>
+                                    <input type="number" class="form-control" id="prix_vehicule" value="10321" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Ancienneté (ans)</label>
+                                    <input type="number" step="0.1" class="form-control" id="anciennete_vehicule" value="16.0" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Poids (kg)</label>
+                                    <input type="number" class="form-control" id="poids_vehicule" value="830" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Vitesse max</label>
+                                    <input type="number" class="form-control" id="vitesse_vehicule" value="150" required>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label text-muted small">Énergie</label>
+                                    <select class="form-select" id="essence_vehicule">
+                                        <option value="Gasoline" selected>Essence</option>
+                                        <option value="Diesel">Diesel</option>
+                                        <option value="Electric">Électrique</option>
+                                        <option value="Hybrid">Hybride</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-muted small">Puissance (DIN)</label>
+                                    <input type="number" class="form-control" id="din_vehicule" value="55" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-muted small">Cylindrée</label>
+                                    <input type="number" class="form-control" id="cylindre_vehicule" value="1239" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small">Début vente (mois)</label>
+                                    <input type="number" class="form-control" id="debut_vente_vehicule" value="16" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small">Fin vente (mois)</label>
+                                    <input type="number" class="form-control" id="fin_vente_vehicule" value="15" required>
+                                </div>
+                            </div>
+
+                            <h4 class="section-title">📄 Détails du Contrat</h4>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label text-muted small">Type de Contrat</label>
+                                    <select class="form-select" id="type_contrat">
+                                        <option value="Mini">Mini</option>
+                                        <option value="Maxi" selected>Maxi</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-muted small">Utilisation</label>
+                                    <select class="form-select" id="utilisation">
+                                        <option value="Retired" selected>Retraite</option>
+                                        <option value="Private">Privé / Trajet Travail</option>
+                                        <option value="Professional">Professionnel</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label text-muted small">Code Postal</label>
+                                    <input type="text" class="form-control" id="code_postal" value="28388" required>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Durée Contrat</label>
+                                    <input type="number" class="form-control" id="duree_contrat" value="1" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Fréq. Paiement</label>
+                                    <select class="form-select" id="freq_paiement">
+                                        <option value="Yearly" selected>Annuel</option>
+                                        <option value="Monthly">Mensuel</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Incident Paiement</label>
+                                    <select class="form-select" id="paiement">
+                                        <option value="No" selected>Non</option>
+                                        <option value="Yes">Oui</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label text-muted small">Ancienneté Info</label>
+                                    <input type="number" class="form-control" id="anciennete_info" value="1" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 btn-lg mt-4 shadow-sm">🚀 Calculer la Prime</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-result border-primary">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
+                        <h5 class="card-title text-primary mb-4">Estimation de la Prime</h5>
+                        
+                        <div id="loading" class="spinner-border text-primary d-none my-5" style="width: 3rem; height: 3rem;" role="status"></div>
+                        
+                        <div id="resultArea" class="w-100 d-none">
+                            <h1 class="display-5 text-success fw-bold mb-0" id="res_prime">-- €</h1>
+                            <p class="text-muted small">Prime Pure Annuelle</p>
+                            
+                            <hr class="my-4">
+                            
+                            <div class="row text-start bg-light p-3 rounded">
+                                <div class="col-6 border-end">
+                                    <p class="text-muted small mb-1">Fréquence</p>
+                                    <h5 class="mb-0 text-dark" id="res_freq">-- %</h5>
+                                </div>
+                                <div class="col-6 ps-3">
+                                    <p class="text-muted small mb-1">Sévérité</p>
+                                    <h5 class="mb-0 text-dark" id="res_sev">-- €</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="initialMsg" class="text-muted my-5">
+                            <p>Remplissez le formulaire et cliquez sur Calculer.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('pricingForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Empêche la page de se recharger !
+            
+            // On affiche le spinner qui tourne
+            document.getElementById('loading').classList.remove('d-none');
+            document.getElementById('resultArea').classList.add('d-none');
+            document.getElementById('initialMsg').classList.add('d-none');
+
+            // On récupère toutes les valeurs du formulaire
+            const payload = {
+                "index": 50000, // Hardcodé
+                "age_conducteur1": parseInt(document.getElementById('age_conducteur1').value),
+                "sex_conducteur1": document.getElementById('sex_conducteur1').value,
+                "anciennete_permis1": parseInt(document.getElementById('anciennete_permis1').value),
+                "bonus": parseFloat(document.getElementById('bonus').value),
+                
+                "conducteur2": document.getElementById('conducteur2').value,
+                "age_conducteur2": parseInt(document.getElementById('age_conducteur2').value) || 0,
+                "sex_conducteur2": document.getElementById('sex_conducteur2').value,
+                "anciennete_permis2": parseInt(document.getElementById('anciennete_permis2').value) || 0,
+
+                "marque_vehicule": document.getElementById('marque_vehicule').value,
+                "modele_vehicule": document.getElementById('modele_vehicule').value,
+                "type_vehicule": document.getElementById('type_vehicule').value,
+                "prix_vehicule": parseFloat(document.getElementById('prix_vehicule').value),
+                "anciennete_vehicule": parseFloat(document.getElementById('anciennete_vehicule').value),
+                "poids_vehicule": parseInt(document.getElementById('poids_vehicule').value),
+                "vitesse_vehicule": parseInt(document.getElementById('vitesse_vehicule').value),
+                "essence_vehicule": document.getElementById('essence_vehicule').value,
+                "din_vehicule": parseInt(document.getElementById('din_vehicule').value),
+                "cylindre_vehicule": parseInt(document.getElementById('cylindre_vehicule').value),
+                "debut_vente_vehicule": parseInt(document.getElementById('debut_vente_vehicule').value),
+                "fin_vente_vehicule": parseInt(document.getElementById('fin_vente_vehicule').value),
+
+                "type_contrat": document.getElementById('type_contrat').value,
+                "utilisation": document.getElementById('utilisation').value,
+                "code_postal": document.getElementById('code_postal').value,
+                "duree_contrat": parseInt(document.getElementById('duree_contrat').value),
+                "freq_paiement": document.getElementById('freq_paiement').value,
+                "paiement": document.getElementById('paiement').value,
+                "anciennete_info": parseInt(document.getElementById('anciennete_info').value)
+            };
+
+            try {
+                // On envoie la requête POST à FastAPI (sur ta route définie dans main.py)
+                const response = await fetch('/predict_premium', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // On met à jour l'affichage
+                    document.getElementById('res_prime').innerText = data.prime_totale.toFixed(2) + ' €';
+                    document.getElementById('res_freq').innerText = (data.details.frequence * 100).toFixed(2) + ' %';
+                    document.getElementById('res_sev').innerText = data.details.severite.toFixed(2) + ' €';
+                    
+                    document.getElementById('loading').classList.add('d-none');
+                    document.getElementById('resultArea').classList.remove('d-none');
+                } else {
+                    alert('Erreur API: ' + JSON.stringify(data));
+                    document.getElementById('loading').classList.add('d-none');
+                    document.getElementById('initialMsg').classList.remove('d-none');
+                }
+            } catch (error) {
+                console.error("Erreur réseau:", error);
+                alert("Impossible de contacter l'API Python.");
+                document.getElementById('loading').classList.add('d-none');
+                document.getElementById('initialMsg').classList.remove('d-none');
+            }
+        });
+    </script>
+</body>
+</html>

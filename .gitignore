@@ -1,0 +1,8 @@
+app/data/models/*.cbm
+app/data/models/target_encoder.pkl
+__pycache__/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.python-version
+.dockerignore
