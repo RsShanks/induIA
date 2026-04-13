@@ -1,0 +1,25 @@
+[project]
+name = "induia"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "catboost>=1.2.10",
+    "category-encoders>=2.8.1",
+    "fastapi>=0.135.3",
+    "jinja2>=3.1.6",
+    "lightgbm>=4.6.0",
+    "numpy>=2.2.6",
+    "optuna>=4.8.0",
+    "pandas>=2.3.3",
+    "scikit-learn>=1.7.2",
+    "uvicorn[standard]>=0.44.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.0.3",
+    "ruff>=0.15.10",
+]

@@ -1,113 +1,117 @@
-import os
 import pandas as pd
 import numpy as np
 import pickle
-from catboost import CatBoostClassifier, CatBoostRegressor
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import roc_auc_score, mean_squared_error
-from category_encoders import TargetEncoder
-import optuna
-
-# Rendre Optuna silencieux
-optuna.logging.set_verbosity(optuna.logging.WARNING)
 
 # =====================================================================
-# --- FONCTIONS UTILITAIRES DE BASE ---
+# --- 1. CHARGEMENT DES BUNDLES EN MÉMOIRE ---
 # =====================================================================
 
-def data():
-    return pd.read_csv('data/training/train.csv')
+_FREQ_BUNDLE = None
+_SEV_BUNDLE = None
 
-def cat():
-    categorical_features = ['type_contrat', 'utilisation', 'sex_conducteur1', 'essence_vehicule'] 
-    numerical_features = ['bonus', 'anciennete_vehicule', 'age_conducteur1','puissance_age','ratio_poids_puissance', 'log_prix_vehicule', 'cp_dep', 'ratio_permis_age','din_vehicule']
-    return categorical_features, numerical_features
 
-def clean_data():
-    df = data()
-    df['montant_sinistre'] = df['montant_sinistre'].fillna(0)
-    df['montant_sinistre'] = df['montant_sinistre'].where(df['montant_sinistre'] >= 0, 0)
-    df = df[df['poids_vehicule'] > 0]
-    return df
+def _load_bundles():
+    """Charge les bundles (Modèle + Préprocesseur + Hyperparamètres) une seule fois."""
+    global _FREQ_BUNDLE, _SEV_BUNDLE
+    if _FREQ_BUNDLE is None:
+        try:
+            # On adapte les chemins vers ton dossier data/models/
+            with open("app/data/models/model_frequence.pkl", "rb") as f:
+                _FREQ_BUNDLE = pickle.load(f)
+            with open("app/data/models/model_severite.pkl", "rb") as f:
+                _SEV_BUNDLE = pickle.load(f)
+        except FileNotFoundError as e:
+            raise RuntimeError(
+                f"Fichier modèle .pkl introuvable dans data/models/. Erreur: {e}"
+            )
+
+
+# =====================================================================
+# --- 2. LOGIQUE DE TRANSFORMATION (Code de ta collaboratrice) ---
+# =====================================================================
+
 
 def apply_feature_engineering(df):
-    df['ratio_poids_puissance'] = df['poids_vehicule'] / (df['cylindre_vehicule'] + 1)
-    df['log_prix_vehicule'] = np.log1p(df['prix_vehicule'])     
-    df['cp_dep'] = df['code_postal'].astype(str).str.zfill(5).str[:2]
-    df['is_sportive'] = ((df['din_vehicule'] > 150) | (df['vitesse_vehicule'] > 200)).astype(int)
-    df["ratio_permis_age"] = df["anciennete_permis1"] / (df["age_conducteur1"] + 1)
-    df["puissance_age"] = df["din_vehicule"] * df["age_conducteur1"]
+    """Reproduit le Feature Engineering de testmod.py"""
+    df = df.copy()
+
+    df["permis_par_age"] = df["anciennete_permis1"] / (df["age_conducteur1"] + 1)
+    df["log_prix"] = np.log1p(df["prix_vehicule"])
+    df["vehicule_puissant"] = (df["din_vehicule"] > 120).astype(int)
+    df["vitesse_clip"] = df["vitesse_vehicule"].clip(50, 220)
+    df["vitesse_vehicule"] = df["vitesse_vehicule"].clip(10, 250)
+    df["exposition"] = (df["duree_contrat"] / 12).clip(lower=0.25)
     return df
 
-def df_clean_fe():
-    df = clean_data()
-    df = apply_feature_engineering(df)
-    return df
 
-def prepare_data():
-    df = df_clean_fe()
-    categorical_features, numerical_features = cat()
-    X = df[numerical_features + categorical_features]
-    y_freq = df['nombre_sinistres']
-    X_train, X_test, y_train, y_test = train_test_split(X, y_freq, test_size=0.2, random_state=8)
-    
-    # Création et sauvegarde de l'encodeur global pour 'cp_dep'
-    os.makedirs('data/models', exist_ok=True)
-    encoder = TargetEncoder(cols=['cp_dep'])
-    X_train = encoder.fit_transform(X_train, y_train)
-    X_test = encoder.transform(X_test)
-    
-    with open('data/models/target_encoder.pkl', 'wb') as f:
-        pickle.dump(encoder, f)
-        
-    return X_train, X_test, y_train, y_test, categorical_features
+def apply_te_preprocessor(df, prep):
+    """Reproduit la fonction de transformation Target Encoding de testmod.py"""
+    df = df.copy()
+
+    # 1) Catégories -> Target Encoding
+    for col in prep["cat_cols"]:
+        if col not in df.columns:
+            df[col] = prep["global_mean"]
+            continue
+
+        col_ser = df[col].fillna("MISSING").astype(str)
+        if col in prep["keep_sets"]:
+            keep = prep["keep_sets"][col]
+            col_ser = col_ser.apply(lambda x: x if x in keep else "RARE")
+
+        mapping = prep["te_maps"][col]
+        df[col] = col_ser.map(mapping).fillna(prep["global_mean"]).astype(float)
+
+    # 2) Numériques -> Remplissage médianes
+    for c in prep["num_cols"]:
+        if c not in df.columns:
+            df[c] = prep["medians"][c]
+        df[c] = pd.to_numeric(df[c], errors="coerce").fillna(prep["medians"][c])
+
+    return df
 
 
 # =====================================================================
-# --- FONCTIONS D'INFÉRENCE POUR L'API (Endpoints) ---
+# --- 3. FONCTIONS D'INFÉRENCE POUR L'API ---
 # =====================================================================
 
 
 def predict_frequency(data_dict: dict) -> float:
-    # 1. Préparation des données
+    _load_bundles()
     df_input = pd.DataFrame([data_dict])
-    df_processed = apply_feature_engineering(df_input)
-    
-    categorical_features, numerical_features = cat()
-    X_pred = df_processed[numerical_features + categorical_features]
+    processed_df = apply_feature_engineering(df_input)
 
-    # 2. On charge le fichier pkl et on transforme (LE FAMEUX DICTIONNAIRE)
-    with open('data/models/target_encoder.pkl', 'rb') as f:
-        encoder = pickle.load(f)
-    X_pred_encoded = encoder.transform(X_pred)
+    # Utilise le préprocesseur spécifique au bundle de fréquence
+    X_freq = apply_te_preprocessor(processed_df, _FREQ_BUNDLE["preprocessor"])
 
-    # 3. On charge le modèle cbm et on prédit (LE 2ÈME DICTIONNAIRE)
-    model_freq = CatBoostClassifier()
-    model_freq.load_model('data/models/model_freq.cbm')
-    proba_sinistre = model_freq.predict_proba(X_pred_encoded)[0][1]
-    
-    return float(proba_sinistre)
+    # Suppression des colonnes inutiles
+    drop_cols = _FREQ_BUNDLE["features_to_drop"]
+    X_freq = X_freq.drop(columns=[c for c in drop_cols if c in X_freq.columns])
+
+    # Prédiction de la probabilité
+    prob = _FREQ_BUNDLE["model"].predict_proba(X_freq)[:, 1][0]
+    return float(prob)
 
 
 def predict_severity(data_dict: dict) -> float:
-    # 1. Préparation des données (comme pour la fréquence)
+    _load_bundles()
     df_input = pd.DataFrame([data_dict])
-    df_processed = apply_feature_engineering(df_input)
-    
-    categorical_features, numerical_features = cat()
-    X_pred = df_processed[numerical_features + categorical_features]
+    processed_df = apply_feature_engineering(df_input)
 
-    # 2. On charge l'encodeur et on transforme (SURTOUT PAS de .fit() ici)
-    with open('data/models/target_encoder.pkl', 'rb') as f:
-        encoder = pickle.load(f)
-    X_pred_encoded = encoder.transform(X_pred)
+    # Utilise le préprocesseur spécifique au bundle de sévérité
+    X_sev = apply_te_preprocessor(processed_df, _SEV_BUNDLE["preprocessor"])
 
-    # 3. On charge le modèle de sévérité (CatBoostRegressor)
-    model_sev = CatBoostRegressor()
-    model_sev.load_model('data/models/model_sev.cbm')
-    
-    # 4. On fait la prédiction
-    montant_estime = model_sev.predict(X_pred_encoded)[0]
-    
-    # Règle métier : un sinistre ne peut pas coûter un montant négatif
-    return max(0.0, float(montant_estime))
+    # Suppression des colonnes inutiles
+    drop_cols = _SEV_BUNDLE["features_to_drop"]
+    X_sev = X_sev.drop(columns=[c for c in drop_cols if c in X_sev.columns])
+
+    # Prédiction (expm1 car entraîné sur log1p)
+    mnt_log = _SEV_BUNDLE["model"].predict(X_sev)[0]
+    mnt_final = np.expm1(mnt_log)
+    return max(0.0, float(mnt_final))
+
+
+def get_alpha() -> float:
+    """Récupère l'hyperparamètre alpha stocké dans le bundle."""
+    _load_bundles()
+    return _SEV_BUNDLE.get("best_alpha", 1.0)
