@@ -3,18 +3,25 @@ import numpy as np
 import pickle
 from typing import Dict, Any
 import logging
+
 logger = logging.getLogger(__name__)
+
+
 class TarificationEngine:
     """
     Moteur de tarification d'assurance automobile.
-    Cette classe gère le chargement des modèles en mémoire, l'ingénierie 
+    Cette classe gère le chargement des modèles en mémoire, l'ingénierie
     des caractéristiques, et les prédictions de fréquence et sévérité.
     """
 
-    def __init__(self, freq_path: str = "app/data/models/model_frequence.pkl", sev_path: str = "app/data/models/model_severite.pkl"):
+    def __init__(
+        self,
+        freq_path: str = "app/data/models/model_frequence.pkl",
+        sev_path: str = "app/data/models/model_severite.pkl",
+    ):
         """
         Initialise le moteur en chargeant les modèles (bundles) en mémoire.
-        
+
         Args:
             freq_path (str): Chemin vers le fichier pickle du modèle de fréquence.
             sev_path (str): Chemin vers le fichier pickle du modèle de sévérité.
@@ -45,10 +52,10 @@ class TarificationEngine:
     def apply_feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
         """
         Applique les transformations métiers (Feature Engineering) sur les données brutes.
-        
+
         Args:
             df (pd.DataFrame): Le DataFrame contenant les données brutes du client.
-            
+
         Returns:
             pd.DataFrame: Le DataFrame enrichi avec de nouvelles caractéristiques.
         """
@@ -67,11 +74,11 @@ class TarificationEngine:
     def apply_te_preprocessor(df: pd.DataFrame, prep: Dict[str, Any]) -> pd.DataFrame:
         """
         Applique le Target Encoding sur les variables catégorielles et remplit les valeurs manquantes.
-        
+
         Args:
             df (pd.DataFrame): Le DataFrame à encoder.
             prep (Dict[str, Any]): Le dictionnaire de préprocessing contenu dans le bundle.
-            
+
         Returns:
             pd.DataFrame: Le DataFrame encodé, prêt pour l'inférence.
         """
@@ -111,8 +118,7 @@ class TarificationEngine:
             processed_df = self.apply_feature_engineering(df_input)
 
             X_freq = self.apply_te_preprocessor(
-                processed_df,
-                self._freq_bundle["preprocessor"]
+                processed_df, self._freq_bundle["preprocessor"]
             )
 
             drop_cols = self._freq_bundle["features_to_drop"]
@@ -126,6 +132,7 @@ class TarificationEngine:
         except Exception as e:
             logger.exception("Erreur lors de la prédiction de fréquence")
             raise RuntimeError(f"Erreur prédiction fréquence : {e}")
+
     def predict_severity(self, data_dict: Dict[str, Any]) -> float:
         """
         Prédit le coût estimé du sinistre s'il survient.
@@ -138,8 +145,7 @@ class TarificationEngine:
             processed_df = self.apply_feature_engineering(df_input)
 
             X_sev = self.apply_te_preprocessor(
-                processed_df,
-                self._sev_bundle["preprocessor"]
+                processed_df, self._sev_bundle["preprocessor"]
             )
 
             drop_cols = self._sev_bundle["features_to_drop"]
@@ -159,7 +165,7 @@ class TarificationEngine:
     def get_alpha(self) -> float:
         """
         Récupère l'hyperparamètre de calibration alpha depuis le bundle de sévérité.
-        
+
         Returns:
             float: La valeur d'alpha (par défaut 1.0).
         """
