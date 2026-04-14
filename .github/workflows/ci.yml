@@ -1,8 +1,5 @@
 name: CI/CD Pipeline InduIA
 
-
-name: CI/CD Pipeline InduIA
-
 on:
   push:
     branches: [ "main", "dev" ]
