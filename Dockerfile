@@ -1,7 +1,7 @@
 # 1. On part d'un Linux ultra-léger
 FROM python:3.10-slim
 
-# NOUVEAU : On installe la dépendance système requise par LightGBM
+# On installe la dépendance système requise par LightGBM
 RUN apt-get update && apt-get install -y libgomp1 && rm -rf /var/lib/apt/lists/*
 
 # 2. On se place dans le dossier de travail
