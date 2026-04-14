@@ -1,4 +1,4 @@
-# 1. On part d'un Linux ultra-léger
+# 1. On part d'un Linux 
 FROM python:3.10-slim
 
 # On installe la dépendance système requise par LightGBM
