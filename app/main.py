@@ -33,7 +33,6 @@ engine = TarificationEngine()
 class ClientInput(BaseModel):
     """
     Modèle de validation des requêtes entrantes.
-    Agit comme un bouclier pour garantir la cohérence des données actuarielles.
     """
 
     model_config = ConfigDict(extra="allow")
