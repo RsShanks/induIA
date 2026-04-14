@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InduIA - Pricing Assurances</title>
+    <title>Assurancetourix - Pricing Assurances</title>
+    <link rel="icon" type="image/png" href="/logo/tt.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .section-title {
@@ -52,27 +53,27 @@
                                 </div>
 
                                 <div class="col-md-3">
-                                    <label class="form-label text-muted small">2ème Conducteur</label>
-                                    <select class="form-select" id="conducteur2">
+                                    <label class="form-label text-muted small fw-bold text-primary">2ème Conducteur</label>
+                                    <select class="form-select border-primary" id="conducteur2">
                                         <option value="No" selected>Non</option>
                                         <option value="Yes">Oui</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label text-muted small">Âge Cond. 2</label>
-                                    <input type="number" class="form-control" id="age_conducteur2" value="0">
+                                    <input type="number" class="form-control cond2-field" id="age_conducteur2" value="" disabled>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label text-muted small">Sexe Cond. 2</label>
-                                    <select class="form-select" id="sex_conducteur2">
+                                    <select class="form-select cond2-field" id="sex_conducteur2" disabled>
                                         <option value="" selected>Aucun</option>
                                         <option value="M">Homme</option>
                                         <option value="F">Femme</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label text-muted small">Permis Cond. 2</label>
-                                    <input type="number" class="form-control" id="anciennete_permis2" value="0">
+                                    <label class="form-label text-muted small">Permis Cond. 2 (ans)</label>
+                                    <input type="number" class="form-control cond2-field" id="anciennete_permis2" value="" disabled>
                                 </div>
                             </div>
 
@@ -80,11 +81,11 @@
                             <div class="row g-3">
                                 <div class="col-md-4">
                                     <label class="form-label text-muted small">Marque</label>
-                                    <input type="text" class="form-control" id="marque_vehicule" value="RENAULT" required>
+                                    <select class="form-select" id="marque_vehicule" required></select>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label text-muted small">Modèle</label>
-                                    <input type="text" class="form-control" id="modele_vehicule" value="CLIO" required>
+                                    <select class="form-select" id="modele_vehicule" required></select>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label text-muted small">Type</label>
@@ -111,7 +112,7 @@
                                     <input type="number" class="form-control" id="vitesse_vehicule" value="150" required>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label class="form-label text-muted small">Énergie</label>
                                     <select class="form-select" id="essence_vehicule">
                                         <option value="Gasoline" selected>Essence</option>
@@ -120,22 +121,13 @@
                                         <option value="Hybrid">Hybride</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label class="form-label text-muted small">Puissance (DIN)</label>
                                     <input type="number" class="form-control" id="din_vehicule" value="55" required>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label class="form-label text-muted small">Cylindrée</label>
                                     <input type="number" class="form-control" id="cylindre_vehicule" value="1239" required>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label text-muted small">Début vente (mois)</label>
-                                    <input type="number" class="form-control" id="debut_vente_vehicule" value="16" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label text-muted small">Fin vente (mois)</label>
-                                    <input type="number" class="form-control" id="fin_vente_vehicule" value="15" required>
                                 </div>
                             </div>
 
@@ -162,8 +154,8 @@
                                 </div>
 
                                 <div class="col-md-3">
-                                    <label class="form-label text-muted small">Durée Contrat</label>
-                                    <input type="number" class="form-control" id="duree_contrat" value="1" required>
+                                    <label class="form-label text-muted small">Durée Contrat (mois)</label>
+                                    <input type="number" class="form-control" id="duree_contrat" value="12" required>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label text-muted small">Fréq. Paiement</label>
@@ -227,17 +219,69 @@
     </div>
 
     <script>
-        document.getElementById('pricingForm').addEventListener('submit', async function(e) {
-            e.preventDefault(); // Empêche la page de se recharger !
+        // ==========================================
+        // Logique UI: Activation/Désactivation Conducteur 2
+        // ==========================================
+        const cond2Select = document.getElementById('conducteur2');
+        const cond2Fields = document.querySelectorAll('.cond2-field');
+
+        cond2Select.addEventListener('change', function() {
+            const isActive = this.value === 'Yes';
+            cond2Fields.forEach(field => {
+                field.disabled = !isActive;
+                if (!isActive) {
+                    // Réinitialiser les valeurs si on désactive
+                    if (field.tagName === 'INPUT') field.value = '';
+                    if (field.tagName === 'SELECT') field.value = '';
+                }
+            });
+        });
+
+        // ==========================================
+        // Logique UI: Marques et Modèles de véhicules
+        // ==========================================
+        const carData = {"RENAULT": ["CLIO", "TWINGO", "SCENIC", "MEGANE", "LAGUNA", "KANGOO", "MODUS", "ESPACE", "SUPERCINQ", "TRAFIC", "EXPRESS", "R19", "MASTER", "R21", "R4", "SAFRANE", "R25", "R11", "KOLEOS", "VEL SATIS", "R4 F6", "R5", "MASCOTT", "R9", "R18", "ESTAFETTE"], "PEUGEOT": ["206", "307", "207", "106", "306", "205", "406", "PARTNER", "107", "308", "407", "405", "BOXER", "EXPERT", "309", "807", "3008", "1007", "607", "806", "5008", "BIPPER", "504", "J5", "305", "605", "104", "J9", "4007", "505", "404"], "CITROEN": ["C3", "XSARA", "BERLINGO", "SAXO", "C4", "C5", "C4 PICASSO", "C15", "AX", "XANTIA", "C1", "C2", "ZX", "2CV 6", "C3 PICASSO", "MEHARI", "JUMPER", "JUMPY", "C8", "NEMO", "2CV", "BX", "C25", "EVASION", "DS3", "XM", "VISA", "ACADIANE", "ZX COUPE", "DYANE 6", "2CV 4", "C-CROSSER", "CX", "AMI 8"], "VOLKSWAGEN": ["GOLF", "POLO", "TOURAN", "PASSAT", "TRANSPORTER", "FOX", "TIGUAN", "GOLF PLUS", "NEW BEETLE", "COCCINELLE", "CADDY", "BORA", "SCIROCCO", "LUPO", "SHARAN", "EOS", "JETTA", "TOUAREG", "LT 35"], "FORD": ["FIESTA", "FOCUS", "MONDEO", "TRANSIT", "KA", "ESCORT", "FUSION", "GALAXY", "KUGA", "S-MAX", "TRANSIT CONNECT", "SIERRA", "COURRIER", "MAVERICK", "TOURNEO", "PUMA", "RANGER"], "OPEL": ["CORSA", "ASTRA", "ZAFIRA", "MERIVA", "VECTRA", "AGILA", "COMBO", "TIGRA", "VIVARO", "FRONTERA", "INSIGNIA", "KADETT", "MOVANO"], "TOYOTA": ["YARIS", "COROLLA", "RAV4", "LAND CRUISER", "AYGO", "AVENSIS", "AURIS", "CARINA", "HI LUX", "PRIUS", "STARLET", "HI ACE", "IQ", "LITE ACE", "CELICA", "PICNIC", "MR", "VERSO"], "MERCEDES BENZ": ["C220", "VITO", "C200", "SPRINTER", "A180", "190", "A170", "CLK", "C180", "SLK", "E220", "B180", "E320", "B200", "ML270", "A160", "C250", "300", "ML320", "E270", "A200", "E200", "250", "E250", "E280", "MB100D", "A140", "C270", "207", "200", "E290", "ML280"], "FIAT": ["PUNTO", "PANDA", "500", "SCUDO", "DOBLO", "BRAVO", "STILO", "DUCATO", "UNO", "BRAVA", "MULTIPLA", "SEICENTO", "CINQUECENTO", "ULYSSE", "FIORINO", "PALIO", "IDEA", "MAREA", "SEDICI", "TEMPRA"], "NISSAN": ["MICRA", "X-TRAIL", "QASHQAI", "ALMERA", "PATROL", "NOTE", "PRIMERA", "TERRANO 2", "ALMERA TINO", "PICK UP", "PIXO", "TERRANO", "SUNNY", "NAVARA", "PATHFINDER", "VANETTE"], "AUDI": ["A3", "A4", "A4 AVANT", "TT", "80", "A6", "A5", "A6 AVANT", "Q5", "Q7"], "BMW": ["320", "118", "525", "320 I", "318", "316 I", "X5", "325", "318 I", "X3", "530", "325 I", "120", "330", "Z3", "Z4", "X1", "323 I", "523 I", "116"], "DACIA": ["LOGAN", "SANDERO", "DUSTER"], "SEAT": ["IBIZA", "LEON", "CORDOBA", "ALTEA", "TOLEDO", "AROSA", "ALHAMBRA"], "SUZUKI": ["SWIFT", "VITARA", "JIMNY", "WAGON R", "ALTO", "IGNIS", "SAMURAI", "SPLASH"], "HYUNDAI": ["GETZ", "SANTA FE", "I10", "MATRIX", "TUCSON", "GALLOPER", "I30", "COUPE", "PONY", "SATELLITE"], "HONDA": ["CIVIC", "CRV", "JAZZ", "ACCORD", "HRV"], "VOLVO": ["S60", "V50", "V70", "XC90", "C30", "XC70", "S40", "V40", "940", "740", "240", "XC60", "850"], "MAZDA": ["MAZDA2", "323", "MAZDA3", "MAZDA6", "MX5", "626", "E", "DEMIO"], "ALFA ROMEO": ["ALFA 147", "ALFA 156", "MITO", "GT", "ALFA 159", "ALFA 146"], "KIA": ["PICANTO", "CEE_D", "RIO", "SORENTO", "SOUL", "SPORTAGE"], "MINI": ["MINI"], "SKODA": ["FABIA", "OCTAVIA", "FELICIA"], "MITSUBISHI": ["PAJERO", "L200", "COLT"], "LAND ROVER": ["FREELANDER", "DISCOVERY", "RANGE ROVER", "DEFENDER"], "CHEVROLET": ["MATIZ", "AVEO", "KALOS", "SPARK", "CAPTIVA"], "CHRYSLER": ["VOYAGER", "PT CRUISER"], "ROVER": ["218", "75", "25"], "JEEP": ["CHEROKEE", "WRANGLER"], "SMART": ["FORTWO", "FORFOUR"], "SAAB": ["9-3", "900"], "SANTANA": ["SAMURAI", "VITARA", "S410", "S413"], "DAEWOO": ["MATIZ"], "IVECO": ["DAILY"], "LANCIA": ["YPSILON", "MUSA", "Y"], "AUTRE": ["AUTRE"]};
+
+        const marqueSelect = document.getElementById('marque_vehicule');
+        const modeleSelect = document.getElementById('modele_vehicule');
+
+        for (const marque in carData) {
+            const option = document.createElement('option');
+            option.value = marque;
+            option.textContent = marque;
+            marqueSelect.appendChild(option);
+        }
+
+        marqueSelect.addEventListener('change', function() {
+            const selectedMarque = marqueSelect.value;
+            const modeles = carData[selectedMarque] || [];
             
-            // On affiche le spinner qui tourne
+            modeleSelect.innerHTML = ''; 
+            
+            for (const modele of modeles) {
+                const option = document.createElement('option');
+                option.value = modele;
+                option.textContent = modele;
+                modeleSelect.appendChild(option);
+            }
+        });
+
+        marqueSelect.value = "RENAULT";
+        marqueSelect.dispatchEvent(new Event('change'));
+        modeleSelect.value = "CLIO";
+
+
+        // ==========================================
+        // Logique d'envoi à l'API Python
+        // ==========================================
+        document.getElementById('pricingForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); 
+            
             document.getElementById('loading').classList.remove('d-none');
             document.getElementById('resultArea').classList.add('d-none');
             document.getElementById('initialMsg').classList.add('d-none');
 
-            // On récupère toutes les valeurs du formulaire
             const payload = {
-                "index": 50000, // Hardcodé
                 "age_conducteur1": parseInt(document.getElementById('age_conducteur1').value),
                 "sex_conducteur1": document.getElementById('sex_conducteur1').value,
                 "anciennete_permis1": parseInt(document.getElementById('anciennete_permis1').value),
@@ -258,8 +302,6 @@
                 "essence_vehicule": document.getElementById('essence_vehicule').value,
                 "din_vehicule": parseInt(document.getElementById('din_vehicule').value),
                 "cylindre_vehicule": parseInt(document.getElementById('cylindre_vehicule').value),
-                "debut_vente_vehicule": parseInt(document.getElementById('debut_vente_vehicule').value),
-                "fin_vente_vehicule": parseInt(document.getElementById('fin_vente_vehicule').value),
 
                 "type_contrat": document.getElementById('type_contrat').value,
                 "utilisation": document.getElementById('utilisation').value,
@@ -271,7 +313,6 @@
             };
 
             try {
-                // On envoie la requête POST à FastAPI (sur ta route définie dans main.py)
                 const response = await fetch('/predict_premium', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -280,8 +321,7 @@
                 
                 const data = await response.json();
 
-                if (data.status === 'success') {
-                    // On met à jour l'affichage
+                if (response.ok && data.status === 'success') {
                     document.getElementById('res_prime').innerText = data.prime_totale.toFixed(2) + ' €';
                     document.getElementById('res_freq').innerText = (data.details.frequence * 100).toFixed(2) + ' %';
                     document.getElementById('res_sev').innerText = data.details.severite.toFixed(2) + ' €';
@@ -289,7 +329,13 @@
                     document.getElementById('loading').classList.add('d-none');
                     document.getElementById('resultArea').classList.remove('d-none');
                 } else {
-                    alert('Erreur API: ' + JSON.stringify(data));
+                    let errorMsg = "Erreur API";
+                    if (data.detail && typeof data.detail === 'string') {
+                        errorMsg = data.detail;
+                    } else if (data.detail && Array.isArray(data.detail)) {
+                        errorMsg = data.detail.map(err => err.msg).join('\n');
+                    }
+                    alert(errorMsg);
                     document.getElementById('loading').classList.add('d-none');
                     document.getElementById('initialMsg').classList.remove('d-none');
                 }

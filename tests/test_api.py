@@ -68,3 +68,24 @@ def test_predict_premium_route():
     assert data["status"] == "success"
     assert "prime_totale" in data
     assert data["prime_totale"] >= 0  # Une prime ne peut pas être négative
+
+
+def test_predict_premium_negative_price():
+    payload = PAYLOAD_TEST.copy()
+    payload["prix_vehicule"] = -1000
+
+    response = client.post("/predict_premium", json=payload)
+    assert response.status_code in [400, 422]
+
+
+def test_invalid_permit_age():
+    """Vérifie qu'on ne peut pas avoir un permis plus ancien que l'âge du conducteur."""
+    payload = PAYLOAD_TEST.copy()
+
+    payload["age_conducteur1"] = 20
+    payload["anciennete_permis1"] = 25
+
+    response = client.post("/predict_premium", json=payload)
+
+    # On attend une erreur 422 de la part de Pydantic/FastAPI
+    assert response.status_code == 422

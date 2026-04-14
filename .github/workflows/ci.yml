@@ -1,0 +1,47 @@
+name: CI/CD Pipeline InduIA
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  test-and-build:
+    name: Verification et Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. On récupère ton code
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      # 2. On installe l'outil magique 'uv'
+      - name: Installation de uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      # 3. On installe Python 3.10
+      - name: Configuration de Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      # 4. On installe les librairies exactement comme sur ton PC
+      - name: Installation des dépendances
+        run: uv sync --frozen
+
+      # 5. On vérifie le style du code (Linter)
+      - name: Analyse Ruff (Linter)
+        run: uv run ruff check .
+
+      # 6. On lance tes tests (Le moment de vérité)
+      - name: Tests unitaires (Pytest)
+        run: uv run pytest -v
+
+      # 7. (Bonus) On vérifie que le Dockerfile n'est pas cassé
+      - name: Test du Build Docker
+        run: docker build -t induia-api-test:latest .
