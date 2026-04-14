@@ -1,0 +1,130 @@
+2026-04-14 09:41:45,669 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 09:41:45,670 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 09:41:45,670 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 09:41:57,666 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 09:41:57,667 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 09:41:57,667 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 09:41:57,667 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 09:41:57,669 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 09:42:43,059 | INFO | app.services.service | Prédiction de fréquence lancée
+2026-04-14 09:42:43,070 | INFO | app.services.service | Feature engineering terminé
+2026-04-14 09:42:45,440 | INFO | app.services.service | Prédiction fréquence réussie : 0.060033
+2026-04-14 09:42:45,441 | INFO | app.services.service | Prédiction de sévérité lancée
+2026-04-14 09:42:45,449 | INFO | app.services.service | Feature engineering terminé
+2026-04-14 09:42:45,464 | INFO | app.services.service | Prédiction sévérité réussie : 1431.68
+2026-04-14 09:43:12,768 | INFO | app.services.service | Prédiction de fréquence lancée
+2026-04-14 09:43:12,775 | INFO | app.services.service | Feature engineering terminé
+2026-04-14 09:43:12,803 | INFO | app.services.service | Prédiction fréquence réussie : 0.060033
+2026-04-14 09:43:12,809 | INFO | app.services.service | Prédiction de sévérité lancée
+2026-04-14 09:43:12,816 | INFO | app.services.service | Feature engineering terminé
+2026-04-14 09:43:12,841 | INFO | app.services.service | Prédiction sévérité réussie : 1431.68
+2026-04-14 09:43:21,926 | INFO | app.services.service | Prédiction de fréquence lancée
+2026-04-14 09:43:21,937 | INFO | app.services.service | Feature engineering terminé
+2026-04-14 09:43:21,965 | INFO | app.services.service | Prédiction fréquence réussie : 0.060033
+2026-04-14 09:43:21,967 | INFO | app.services.service | Prédiction de sévérité lancée
+2026-04-14 09:43:21,980 | INFO | app.services.service | Feature engineering terminé
+2026-04-14 09:43:22,001 | INFO | app.services.service | Prédiction sévérité réussie : 1431.68
+2026-04-14 09:45:04,446 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 09:45:04,446 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 09:45:04,446 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 09:45:05,436 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 09:45:05,437 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 09:45:05,438 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 09:45:05,438 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 09:45:05,441 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 09:45:18,314 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 09:45:18,314 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 09:45:18,315 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 09:45:19,179 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 09:45:19,179 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 09:45:19,179 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 09:45:19,180 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 09:45:19,181 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 09:45:29,994 | INFO | app.services.service | Prédiction de fréquence lancée
+2026-04-14 09:45:30,004 | INFO | app.services.service | Feature engineering terminé
+2026-04-14 09:45:31,463 | INFO | app.services.service | Prédiction fréquence réussie : 0.060033
+2026-04-14 09:45:31,468 | INFO | app.services.service | Prédiction de sévérité lancée
+2026-04-14 09:45:31,490 | INFO | app.services.service | Feature engineering terminé
+2026-04-14 09:45:31,519 | INFO | app.services.service | Prédiction sévérité réussie : 1431.68
+2026-04-14 09:50:20,517 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 09:50:20,518 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 09:50:20,519 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 09:50:21,554 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 09:50:21,556 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 09:50:21,556 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 09:50:21,556 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 09:50:21,559 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 09:51:55,214 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 09:51:55,214 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 09:51:55,219 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 09:51:56,184 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 09:51:56,186 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 09:51:56,186 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 09:51:56,187 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 09:51:56,188 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:31:29,850 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:31:29,850 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:31:29,851 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:31:34,688 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:32:02,256 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:32:02,257 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:32:02,258 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:32:03,125 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:32:03,126 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:32:03,126 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:32:03,126 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:32:03,128 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:32:04,452 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:32:04,453 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:32:04,453 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:32:05,439 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:32:05,440 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:32:05,440 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:32:05,440 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:32:05,443 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:39:01,250 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:39:01,250 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:39:01,251 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:39:02,113 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:39:02,114 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:39:02,114 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:39:02,114 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:39:02,115 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:41:54,404 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:41:54,404 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:41:54,405 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:41:55,934 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:41:55,935 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:41:55,935 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:41:55,935 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:41:55,937 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:45:32,430 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:45:32,431 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:45:32,431 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:45:33,292 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:45:33,375 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:45:33,375 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:45:33,375 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:45:33,377 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:46:56,381 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:46:56,381 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:46:56,381 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:46:57,230 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:46:57,231 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:46:57,231 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:46:57,231 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:46:57,233 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:47:20,278 | INFO | app.services.service | Prédiction de fréquence lancée
+2026-04-14 11:47:20,319 | INFO | app.services.service | Feature engineering terminé
+2026-04-14 11:47:22,876 | INFO | app.services.service | Prédiction fréquence réussie : 0.060033
+2026-04-14 11:47:22,877 | INFO | app.services.service | Prédiction de sévérité lancée
+2026-04-14 11:47:22,896 | INFO | app.services.service | Feature engineering terminé
+2026-04-14 11:47:22,924 | INFO | app.services.service | Prédiction sévérité réussie : 1431.68
+2026-04-14 11:51:36,134 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:51:36,134 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:51:36,135 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:51:37,708 | INFO | app.services.service | Bundles chargés avec succès
+2026-04-14 11:51:37,709 | INFO | app.services.service | Chargement des bundles modèles
+2026-04-14 11:51:37,710 | INFO | app.services.service | Chemin modèle fréquence : app/data/models/model_frequence.pkl
+2026-04-14 11:51:37,710 | INFO | app.services.service | Chemin modèle sévérité : app/data/models/model_severite.pkl
+2026-04-14 11:51:37,713 | INFO | app.services.service | Bundles chargés avec succès

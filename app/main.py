@@ -3,10 +3,14 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, ConfigDict
 from typing import Dict, Any
-
-# On importe ta nouvelle classe de moteur de tarification
+from app.logging_config import setup_logging
 from app.services.service import TarificationEngine
+from fastapi.staticfiles import StaticFiles
 
+
+setup_logging()
+
+engine = TarificationEngine()
 # =====================================================================
 # --- 1. INITIALISATION DE L'APPLICATION ET DU MOTEUR ---
 # =====================================================================
@@ -16,7 +20,7 @@ app = FastAPI(
     description="API de tarification d'assurance automobile avec Machine Learning",
     version="1.0.0"
 )
-
+app.mount("/logo", StaticFiles(directory="app/logo"), name="logo")
 # On allume le moteur (qui va charger les fichiers .pkl en mémoire 1 seule fois)
 engine = TarificationEngine()
 

@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 import pickle
 from typing import Dict, Any
-
+import logging
+logger = logging.getLogger(__name__)
 class TarificationEngine:
     """
     Moteur de tarification d'assurance automobile.
@@ -26,12 +27,17 @@ class TarificationEngine:
         """
         Charge physiquement les fichiers pickle depuis le disque.
         Cette méthode est privée (indiquée par le '_') et appelée automatiquement au démarrage.
+
         """
+        logger.info("Chargement des bundles modèles")
+        logger.info("Chemin modèle fréquence : %s", freq_path)
+        logger.info("Chemin modèle sévérité : %s", sev_path)
         try:
             with open(freq_path, "rb") as f:
                 self._freq_bundle = pickle.load(f)
             with open(sev_path, "rb") as f:
                 self._sev_bundle = pickle.load(f)
+            logger.info("Bundles chargés avec succès")
         except FileNotFoundError as e:
             raise RuntimeError(f"Fichier modèle .pkl introuvable. Erreur: {e}")
 
@@ -54,7 +60,7 @@ class TarificationEngine:
         df["vitesse_clip"] = df["vitesse_vehicule"].clip(50, 220)
         df["vitesse_vehicule"] = df["vitesse_vehicule"].clip(10, 250)
         df["exposition"] = (df["duree_contrat"] / 12).clip(lower=0.25)
-        
+        logger.info("Feature engineering terminé")
         return df
 
     @staticmethod
@@ -95,47 +101,60 @@ class TarificationEngine:
 
     def predict_frequency(self, data_dict: Dict[str, Any]) -> float:
         """
-        Prédit la probabilité qu'un sinistre survienne (Fréquence).
-        
-        Args:
-            data_dict (Dict[str, Any]): Dictionnaire contenant les informations du client.
-            
-        Returns:
-            float: Probabilité de sinistre (comprise entre 0 et 1).
+        Prédit la probabilité qu'un sinistre survienne.
         """
-        df_input = pd.DataFrame([data_dict])
-        processed_df = self.apply_feature_engineering(df_input)
+        logger.info("Prédiction de fréquence lancée")
+        logger.debug("Données reçues pour fréquence : %s", data_dict)
 
-        X_freq = self.apply_te_preprocessor(processed_df, self._freq_bundle["preprocessor"])
+        try:
+            df_input = pd.DataFrame([data_dict])
+            processed_df = self.apply_feature_engineering(df_input)
 
-        drop_cols = self._freq_bundle["features_to_drop"]
-        X_freq = X_freq.drop(columns=[c for c in drop_cols if c in X_freq.columns])
+            X_freq = self.apply_te_preprocessor(
+                processed_df,
+                self._freq_bundle["preprocessor"]
+            )
 
-        prob = self._freq_bundle["model"].predict_proba(X_freq)[:, 1][0]
-        return float(prob)
+            drop_cols = self._freq_bundle["features_to_drop"]
+            X_freq = X_freq.drop(columns=[c for c in drop_cols if c in X_freq.columns])
 
+            prob = self._freq_bundle["model"].predict_proba(X_freq)[:, 1][0]
+
+            logger.info("Prédiction fréquence réussie : %.6f", prob)
+            return float(prob)
+
+        except Exception as e:
+            logger.exception("Erreur lors de la prédiction de fréquence")
+            raise RuntimeError(f"Erreur prédiction fréquence : {e}")
     def predict_severity(self, data_dict: Dict[str, Any]) -> float:
         """
-        Prédit le coût estimé du sinistre s'il survient (Sévérité).
-        
-        Args:
-            data_dict (Dict[str, Any]): Dictionnaire contenant les informations du client.
-            
-        Returns:
-            float: Montant estimé en euros.
+        Prédit le coût estimé du sinistre s'il survient.
         """
-        df_input = pd.DataFrame([data_dict])
-        processed_df = self.apply_feature_engineering(df_input)
+        logger.info("Prédiction de sévérité lancée")
+        logger.debug("Données reçues pour sévérité : %s", data_dict)
 
-        X_sev = self.apply_te_preprocessor(processed_df, self._sev_bundle["preprocessor"])
+        try:
+            df_input = pd.DataFrame([data_dict])
+            processed_df = self.apply_feature_engineering(df_input)
 
-        drop_cols = self._sev_bundle["features_to_drop"]
-        X_sev = X_sev.drop(columns=[c for c in drop_cols if c in X_sev.columns])
+            X_sev = self.apply_te_preprocessor(
+                processed_df,
+                self._sev_bundle["preprocessor"]
+            )
 
-        mnt_log = self._sev_bundle["model"].predict(X_sev)[0]
-        mnt_final = np.expm1(mnt_log)
-        
-        return max(0.0, float(mnt_final))
+            drop_cols = self._sev_bundle["features_to_drop"]
+            X_sev = X_sev.drop(columns=[c for c in drop_cols if c in X_sev.columns])
+
+            mnt_log = self._sev_bundle["model"].predict(X_sev)[0]
+            mnt_final = np.expm1(mnt_log)
+            mnt_final = max(0.0, float(mnt_final))
+
+            logger.info("Prédiction sévérité réussie : %.2f", mnt_final)
+            return mnt_final
+
+        except Exception as e:
+            logger.exception("Erreur lors de la prédiction de sévérité")
+            raise RuntimeError(f"Erreur prédiction sévérité : {e}")
 
     def get_alpha(self) -> float:
         """
