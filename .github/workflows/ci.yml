@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. On récupère ton code
+      # 1. On récupère le code
       - name: Checkout du code
         uses: actions/checkout@v4
 
-      # 2. On installe l'outil magique 'uv'
+      # 2. On installe uv
       - name: Installation de uv
         uses: astral-sh/setup-uv@v3
         with:
@@ -30,18 +30,18 @@ jobs:
         with:
           python-version: "3.10"
 
-      # 4. On installe les librairies exactement comme sur ton PC
+      # 4. On installe les librairies
       - name: Installation des dépendances
         run: uv sync --frozen
 
-      # 5. On vérifie le style du code (Linter)
-      - name: Analyse Ruff (Linter)
+      # 5. On vérifie le style du code
+      - name: Analyse Ruff
         run: uv run ruff check .
 
-      # 6. On lance tes tests (Le moment de vérité)
-      - name: Tests unitaires (Pytest)
+      # 6. On lance tes tests
+      - name: Tests unitaires 
         run: uv run pytest -v
 
-      # 7. (Bonus) On vérifie que le Dockerfile n'est pas cassé
+      # 7. On vérifie le Dockerfile
       - name: Test du Build Docker
         run: docker build -t induia-api-test:latest .
