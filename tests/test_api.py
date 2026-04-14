@@ -1,10 +1,9 @@
 from fastapi.testclient import TestClient
 from app.main import app
 
-# On crée un client virtuel pour attaquer notre API
 client = TestClient(app)
 
-# Un dictionnaire de test valide (ton assuré de 66 ans)
+# Un dictionnaire de test valide
 PAYLOAD_TEST = {
     "index": 50000,
     "bonus": 0.58,
